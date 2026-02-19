@@ -1,13 +1,12 @@
 <template>
-  <div class="grid grid-cols-6 gap-4 items-center py-3 border-b">
+  <div class="grid grid-cols-7 gap-4 items-center py-3 border-b">
     
     <div class="font-medium text-gray-800">
       {{ product.name }}  
     </div>
 
     <div class="text-gray-600">
-      СС: {{ minPrice }} {{ product.unit }}
-      
+      {{ formatPrice(minPrice) }} {{ product.unit }}
     </div>
     
     <div class="flex flex-row text-black">
@@ -29,33 +28,37 @@
       />
     </div>
      <div class="font-medium text-gray-800">
-      {{ product.marginPrice.toFixed(2) }}
+      {{ formatPrice(product.marginPrice) }} сум
+    </div>
+     <div class="font-medium text-gray-800">
+      {{ formatPrice(product.deliveryPrice) }} сум
     </div>
     <div class="font-medium text-gray-800">
-      {{ product.finalPrice.toFixed(2) }}  
+      {{ formatPrice(product.finalPrice) }} сум
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { formatPrice } from '../utils/format.js'
 
 const props = defineProps({
   product: Object,
 })
 
 const emit = defineEmits(['update:finalPrice'])
-const minPrice = computed(() => (props.product.minPrice/1.12).toFixed(2))
+const minPrice = computed(() => (props.product.minPrice).toFixed(2))
 
 const setMargin = (event) => {
   const value = event.target.value
-  props.product.marginPrice = (props.product.minPrice/1.12)/(1-(value/100))
-  emit('update:finalPrice', props.product.marginPrice)
+  props.product.marginPrice = ((props.product.minPrice)/(1-(value/100)))*1.12
+  emit('update:finalPrice')
 }
 
 const setAmount = (event) => {
   const value = event.target.value
   props.product.amount = value
-  emit('update:finalPrice', props.product.marginPrice)
+  emit('update:finalPrice')
 }
 </script>
