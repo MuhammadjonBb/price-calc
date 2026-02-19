@@ -1,8 +1,8 @@
 <template>
   <div class="p-6 bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto bg-white shadow-xl rounded-2xl p-6">
+    <div class="max-w-full mx-auto bg-white shadow-xl rounded-2xl p-6">
       <h2 class="text-2xl font-bold mb-6 text-gray-800">
-        Product List
+        Калькулятор маржи и дорожных расходов
       </h2>
 
       <div class="grid gap-4 mb-4">
@@ -78,7 +78,6 @@ const products = ref([
   //   amount: 1,
   //   deliveryPrice: 0
   // },
- 
 ])
 
 const roadExpense = ref(0)
@@ -89,7 +88,9 @@ const setFinalPrice = () => { // Функция для расчета итого
       const productPriceSumm = product.marginPrice * product.amount // Сумма для конкретного продукта (цена с маржой * количество)
       const productShare = productPriceSumm / totalMarginPrice // Доля конкретного продукта в общей сумме цен с маржой
       const deliveryCost = productShare * roadExpense.value // Доля дорожных расходов для конкретного продукта
-      product.deliveryPrice = (productPriceSumm + deliveryCost)/ product.amount // Цена после доставки для конкретного продукта (с учетом его доли в дорожных расходах)
+      product.deliveryPrice = productPriceSumm/product.amount + deliveryCost // Цена после доставки для конкретного продукта (с учетом его доли в дорожных расходах)
+      console.log(deliveryCost);
+      
       product.finalPrice = productPriceSumm + deliveryCost // Итоговая цена для конкретного продукта (цена с маржой + его доля в дорожных расходах)
     }
 }
@@ -102,8 +103,6 @@ const addProduct = (product) => {
     amount: 1,
     finalPrice: 0
   })
-  console.log(products.value);
-  
 }
 
 // const setFinalPrice = (() => {

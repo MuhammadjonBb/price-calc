@@ -18,7 +18,7 @@
         @click="addProduct(product)"
         class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
       >
-        {{ product.name }} — {{ product.cost }} / {{ product.unit }}
+        {{ product.name }} — {{ product.minPrice }} / {{ product.unit }}
       </div>
     </div>
   </div>
