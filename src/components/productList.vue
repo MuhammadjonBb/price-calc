@@ -12,8 +12,10 @@
           <div class="font-medium text-gray-800">Ед. изм.</div>
           <div class="font-medium text-gray-800">Количество</div>
           <div class="font-medium text-gray-800">Маржа %</div>
-          <div class="font-medium text-gray-800">Цена (Маржа + НДС)</div>
-          <div class="font-medium text-gray-800">Цена после доставки</div>
+          <div class="font-medium text-gray-800">
+            Цена без доставки (Маржа + НДС)
+          </div>
+          <div class="font-medium text-gray-800">Цена с учетем доставки</div>
           <div class="font-medium text-gray-800">Сумма</div>
         </div>
         <div
@@ -29,6 +31,20 @@
           @update:finalPrice="setFinalPrice"
           @update:removeProduct="removeProduct"
         />
+        <div class="grid grid-cols-10 font-bold">
+          <div
+            v-show="products.length > 0"
+            class="font-bold text-gray-800 col-start-8 text-right pr-5"
+          >
+            Итого:
+          </div>
+          <div class="font-bold text-gray-800">
+            {{
+              formatPrice(products.reduce((sum, p) => sum + p.finalPrice, 0))
+            }}
+            сум
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -45,9 +61,19 @@
           v-model="formattedValue"
         />
       </div>
-      <div class="flex-col gap-2">
+      <div class="flex flex-col gap-2">
         <div>🔍 Поиск</div>
         <productSearch @add-product="addProduct" :added-products="products" />
+        <button
+          class="flex self-end cursor-pointer bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+          @click="
+            products = [];
+            roadExpense = '';
+            setFinalPrice();
+          "
+        >
+          🗑️ Очистить все
+        </button>
       </div>
     </div>
   </div>
@@ -57,6 +83,7 @@
 import { onMounted, ref, watch, computed } from "vue";
 import productRow from "./productRow.vue";
 import productSearch from "./productSearch.vue";
+import { formatPrice } from "../utils/format.js";
 
 const products = ref([
   // {
@@ -89,8 +116,12 @@ const setFinalPrice = () => {
   ); // Суммируем цену с маржой для всех продуктов, умножая на количество
   for (const product of products.value) {
     const productPriceSumm = product.marginPrice * product.amount; // Сумма для конкретного продукта (цена с маржой * количество)
-    const productShare = productPriceSumm / totalMarginPrice; // Доля конкретного продукта в общей сумме цен с маржой
-    const deliveryCost = productShare * roadExpense.value; // Доля дорожного расхода для конкретного продукта
+    const productShare = totalMarginPrice
+      ? productPriceSumm / totalMarginPrice
+      : 0; // Доля конкретного продукта в общей сумме цен с маржой
+    const deliveryCost = roadExpense.value
+      ? productShare * roadExpense.value
+      : 0; // Доля дорожного расхода для конкретного продукта
     product.deliveryPrice =
       productPriceSumm / product.amount + deliveryCost / product.amount; // Цена после доставки для конкретного продукта (с учетом его доли в дорожных расходах)
     product.finalPrice = productPriceSumm + deliveryCost; // Итоговая цена для конкретного продукта (цена с маржой + его доля в дорожных расходах)
@@ -107,6 +138,7 @@ const addProduct = (product) => {
     finalPrice: 0,
     margin: 0,
   });
+  setFinalPrice(); // Пересчитываем итоговую цену после добавления продукта
 };
 
 // Функция для удаления продукта из списка

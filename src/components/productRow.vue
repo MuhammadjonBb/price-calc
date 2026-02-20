@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-10 gap-4 items-center py-3 border-b">
-    <div class="font-medium text-gray-800 col-span-2">
+  <div class="grid grid-cols-10 items-center py-3 border-b">
+    <div class="font-medium text-gray-800 col-span-2 pr-2">
       {{ product.name }}
     </div>
 
@@ -18,7 +18,6 @@
       />
     </div>
     <div class="flex flex-row text-black max-w-30">
-      <div class="font-medium mr-1"></div>
       <input
         name="margin"
         type="number"
