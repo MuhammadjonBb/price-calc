@@ -6,12 +6,12 @@
       </h2>
 
       <div class="grid gap-4 mb-4">
-        <div class="grid grid-cols-9 font-bold">
+        <div class="grid grid-cols-10 font-bold">
           <div class="font-medium text-gray-800 col-span-2">Наименование</div>
           <div class="font-medium text-gray-800">СС Факт</div>
           <div class="font-medium text-gray-800">Ед. изм.</div>
-          <div class="font-medium text-gray-800">Маржа %</div>
           <div class="font-medium text-gray-800">Количество</div>
+          <div class="font-medium text-gray-800">Маржа %</div>
           <div class="font-medium text-gray-800">Цена (Маржа + НДС)</div>
           <div class="font-medium text-gray-800">Цена после доставки</div>
           <div class="font-medium text-gray-800">Сумма</div>
@@ -27,34 +27,34 @@
           :key="index"
           :product="product"
           @update:finalPrice="setFinalPrice"
+          @update:removeProduct="removeProduct"
         />
-        <div class="flex flex-col gap-4 mt-6">
-          <div class="flex">
-            <div>Дорожный расход:</div>
-            <input
-              placeholder="Дорожный расход"
-              name="roadExpense"
-              type="number"
-              class="block w-full border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-400 outline-none"
-              @input="setFinalPrice"
-              v-model.number="roadExpense"
-            />
-          </div>
-          <!-- <div class="flex gap-4">
-          <input v-model="searchProductValue" type="text" name="searchProduct" placeholder="Поиск продукта" class="block w-full border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-400 outline-none" />
-          <button name="addProduct" @click="addProduct" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            Добавить продукт
-          </button>
-        </div> -->
-          <productSearch @add-product="addProduct" />
-        </div>
+      </div>
+    </div>
+    <div
+      class="grid grid-cols-2 gap-4 mt-6 max-w-full mx-auto bg-white shadow-xl rounded-2xl p-6"
+    >
+      <div class="flex flex-col gap-2">
+        <div>🚚 Дорожный расход:</div>
+        <input
+          placeholder="Дорожный расход"
+          name="roadExpense"
+          type="number"
+          class="block w-full border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-400 outline-none"
+          @input="setFinalPrice"
+          v-model.number="roadExpense"
+        />
+      </div>
+      <div class="flex-col gap-2">
+        <div>🔍 Поиск</div>
+        <productSearch @add-product="addProduct" :added-products="products" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import productRow from "./productRow.vue";
 import productSearch from "./productSearch.vue";
 
@@ -69,11 +69,20 @@ const products = ref([
   //   deliveryPrice: 0
   // },
 ]);
-
 const roadExpense = ref(0);
 
+// Загружаем данные из Local Storage при загрузке страницы
+onMounted(() => {
+  if (localStorage.getItem("products")) {
+    products.value = JSON.parse(localStorage.getItem("products"));
+  }
+  if (localStorage.getItem("roadExpense")) {
+    roadExpense.value = parseFloat(localStorage.getItem("roadExpense"));
+  }
+});
+
+// Функция для расчета итоговой цены с учетом маржи и дорожных расходов
 const setFinalPrice = () => {
-  // Функция для расчета итоговой цены с учетом маржи и дорожных расходов
   const totalMarginPrice = products.value.reduce(
     (sum, product) => sum + product.marginPrice * product.amount,
     0,
@@ -83,12 +92,11 @@ const setFinalPrice = () => {
     const productShare = productPriceSumm / totalMarginPrice; // Доля конкретного продукта в общей сумме цен с маржой
     const deliveryCost = productShare * roadExpense.value; // Доля дорожных расходов для конкретного продукта
     product.deliveryPrice = productPriceSumm / product.amount + deliveryCost; // Цена после доставки для конкретного продукта (с учетом его доли в дорожных расходах)
-    console.log(deliveryCost);
-
     product.finalPrice = productPriceSumm + deliveryCost; // Итоговая цена для конкретного продукта (цена с маржой + его доля в дорожных расходах)
   }
 };
 
+// Функция для добавления продукта в список
 const addProduct = (product) => {
   products.value.push({
     ...product,
@@ -96,35 +104,33 @@ const addProduct = (product) => {
     marginPrice: 0,
     amount: 1,
     finalPrice: 0,
+    margin: 0,
   });
 };
 
-// const setFinalPrice = (() => {
-//   const totalFinalPrice = products.value.reduce((sum, product) => sum + product.finalPrice, 0)
-//   for (const product of products.value) {
-//       product.finalPrice = product.minPrice + (product.minPrice / totalFinalPrice) * roadExpense.value * product.amount
-//       console.log(totalFinalPrice)
-//   }
-// })
+// Функция для удаления продукта из списка
+const removeProduct = (product) => {
+  console.log(product);
 
-// const searchProductValue = ref('')
-// const addProduct = () => {
-//   products.value.push({
-//     name: searchProductValue.value,
-//     minPrice: 150,`
-//     marginPrice: 0,
-//     finalPrice: 0,
-//     unit: 'шт',
-//     amount: 1,
-//     deliveryPrice: 0
-//   })
-//   searchProductValue.value = ''
-// }
+  const index = products.value.findIndex((p) => p.id === product.id);
+  if (index !== -1) {
+    products.value.splice(index, 1);
+    setFinalPrice(); // Пересчитываем итоговую цену после удаления продукта
+  }
+};
 
-// const setFinalPrice = (event) => {
-//   const roadExpenseValue = event.target.value
-//   const totalFinalPrice = products.value.reduce((sum, product) => sum + product.marginPrice, 0)
-//   for (const product of products.value) {
-//     product.finalPrice = product.marginPrice + (product.marginPrice / totalFinalPrice) * roadExpenseValue
-//   }}
+// Используем Local Storage для сохранения данных при перезагрузке страницы
+if (localStorage.getItem("products")) {
+  products.value = JSON.parse(localStorage.getItem("products"));
+  roadExpense.value = parseFloat(localStorage.getItem("roadExpense"));
+}
+watch(
+  products,
+  (newProducts) => {
+    localStorage.setItem("products", JSON.stringify(newProducts));
+    localStorage.setItem("roadExpense", roadExpense.value);
+    console.log(localStorage.getItem("products"));
+  },
+  { deep: true },
+);
 </script>

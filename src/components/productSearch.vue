@@ -1,10 +1,11 @@
 <template>
   <div class="relative w-full">
     <input
+      name="search"
       v-model="search"
       type="text"
       placeholder="Поиск товара..."
-      class="w-full border rounded px-3 py-2"
+      class="w-full border rounded-lg px-3 py-2"
     />
 
     <!-- Подсказки -->
@@ -16,7 +17,7 @@
         v-for="product in filteredProducts"
         :key="product.id"
         @click="addProduct(product)"
-        class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+        class="px-3 py-2 hover:bg-gray-100 cursor-pointer rounded-lg"
       >
         {{ product.name }}
       </div>
@@ -28,13 +29,21 @@
 import { ref, computed } from "vue";
 import data from "../data/products.json";
 
+const props = defineProps({
+  addedProducts: Array,
+});
 const search = ref("");
 
+// Фильтруем продукты на основе введенного текста и исключаем уже добавленные
 const filteredProducts = computed(() => {
   if (!search.value) return [];
-  return data.filter((product) =>
-    product.name.toLowerCase().includes(search.value.toLowerCase()),
-  );
+  return data.filter((product) => {
+    const isAdded = props.addedProducts.some((p) => p.id === product.id); // Проверяем, добавлен ли продукт в список
+    return (
+      !isAdded &&
+      product.name.toLowerCase().includes(search.value.toLowerCase())
+    );
+  });
 });
 const emit = defineEmits(["add-product"]);
 const addProduct = (product) => {
