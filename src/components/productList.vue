@@ -39,10 +39,10 @@
         <input
           placeholder="Дорожный расход"
           name="roadExpense"
-          type="number"
+          type="text"
           class="block w-full border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-400 outline-none"
           @input="setFinalPrice"
-          v-model.number="roadExpense"
+          v-model="formattedValue"
         />
       </div>
       <div class="flex-col gap-2">
@@ -69,7 +69,7 @@ const products = ref([
   //   deliveryPrice: 0
   // },
 ]);
-const roadExpense = ref(0);
+const roadExpense = ref("");
 
 // Загружаем данные из Local Storage при загрузке страницы
 onMounted(() => {
@@ -90,8 +90,9 @@ const setFinalPrice = () => {
   for (const product of products.value) {
     const productPriceSumm = product.marginPrice * product.amount; // Сумма для конкретного продукта (цена с маржой * количество)
     const productShare = productPriceSumm / totalMarginPrice; // Доля конкретного продукта в общей сумме цен с маржой
-    const deliveryCost = productShare * roadExpense.value; // Доля дорожных расходов для конкретного продукта
-    product.deliveryPrice = productPriceSumm / product.amount + deliveryCost; // Цена после доставки для конкретного продукта (с учетом его доли в дорожных расходах)
+    const deliveryCost = productShare * roadExpense.value; // Доля дорожного расхода для конкретного продукта
+    product.deliveryPrice =
+      productPriceSumm / product.amount + deliveryCost / product.amount; // Цена после доставки для конкретного продукта (с учетом его доли в дорожных расходах)
     product.finalPrice = productPriceSumm + deliveryCost; // Итоговая цена для конкретного продукта (цена с маржой + его доля в дорожных расходах)
   }
 };
@@ -110,8 +111,6 @@ const addProduct = (product) => {
 
 // Функция для удаления продукта из списка
 const removeProduct = (product) => {
-  console.log(product);
-
   const index = products.value.findIndex((p) => p.id === product.id);
   if (index !== -1) {
     products.value.splice(index, 1);
@@ -124,13 +123,27 @@ if (localStorage.getItem("products")) {
   products.value = JSON.parse(localStorage.getItem("products"));
   roadExpense.value = parseFloat(localStorage.getItem("roadExpense"));
 }
+// Сохраняем данные в Local Storage при изменении продуктов или дорожных расходов
 watch(
   products,
   (newProducts) => {
     localStorage.setItem("products", JSON.stringify(newProducts));
     localStorage.setItem("roadExpense", roadExpense.value);
-    console.log(localStorage.getItem("products"));
   },
   { deep: true },
 );
+
+// Форматируем значение дорожного расхода для отображения с пробелами
+const formattedValue = computed({
+  get() {
+    if (!roadExpense.value) return "";
+    return new Intl.NumberFormat("ru-RU", {
+      maximumFractionDigits: 2,
+    }).format(roadExpense.value);
+  },
+  set(val) {
+    // Убираем пробелы и всё кроме цифр
+    roadExpense.value = val.replace(/\s/g, "").replace(/[^\d]/g, "");
+  },
+});
 </script>
