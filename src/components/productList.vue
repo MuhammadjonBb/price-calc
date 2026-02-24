@@ -1,29 +1,27 @@
 <template>
   <div class="p-6 bg-gray-50 min-h-screen">
     <div class="max-w-full mx-auto bg-white shadow-xl rounded-2xl p-6">
-      <h2 class="text-2xl font-bold mb-6 text-gray-800">
+      <h2 class="text-2xl font-bold mb-6">
         Калькулятор маржи и дорожных расходов
       </h2>
 
       <div class="grid gap-4 mb-4">
         <div class="grid grid-cols-10 font-bold">
-          <div class="font-medium text-gray-800 col-span-2">Наименование</div>
-          <div class="font-medium text-gray-800">СС Факт</div>
-          <div class="font-medium text-gray-800">Ед. изм.</div>
-          <div class="font-medium text-gray-800">Количество</div>
-          <div class="font-medium text-gray-800">Маржа %</div>
-          <div class="font-medium text-gray-800">
-            Цена без доставки (Маржа + НДС)
-          </div>
-          <div class="font-medium text-gray-800">Цена с учетем доставки</div>
-          <div class="font-medium text-gray-800">Сумма</div>
+          <div class="col-span-2">Наименование</div>
+          <div>СС Факт</div>
+          <div>Ед. изм.</div>
+          <div>Количество</div>
+          <div>Маржа %</div>
+          <div>Цена без доставки (Маржа + НДС)</div>
+          <div>Цена с учетем доставки</div>
+          <div>Сумма</div>
         </div>
-        <div
+        <!-- <div
           v-if="!products.length"
           class="text-gray-900 text-center p-4 mt-2 border-dashed border-2 border-gray-600 font-bold rounded-lg"
         >
           Добавьте товары для расчета
-        </div>
+        </div> -->
         <productRow
           v-for="(product, index) in products"
           :key="index"
@@ -32,15 +30,27 @@
           @update:removeProduct="removeProduct"
         />
         <div v-show="products.length > 0" class="grid grid-cols-10 font-bold">
-          <div class="font-bold text-gray-800 col-start-8 text-right pr-5">
-            Итого:
-          </div>
-          <div class="font-bold text-gray-800">
+          <div class="font-bold col-start-8 text-right pr-5">Итого:</div>
+          <div class="font-bold">
             {{
               formatPrice(products.reduce((sum, p) => sum + p.finalPrice, 0))
             }}
             сум
           </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="font-bold">🔍 Поиск</div>
+          <productSearch @add-product="addProduct" :added-products="products" />
+          <button
+            class="flex self-end cursor-pointer bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+            @click="
+              products = [];
+              roadExpense = '';
+              setFinalPrice();
+            "
+          >
+            🗑️ Очистить все
+          </button>
         </div>
       </div>
     </div>
@@ -48,7 +58,7 @@
       class="grid grid-cols-2 gap-4 mt-6 max-w-full mx-auto bg-white shadow-xl rounded-2xl p-6"
     >
       <div class="flex flex-col gap-2">
-        <div>🚚 Дорожный расход:</div>
+        <div class="font-bold">🚚 Дорожный расход:</div>
         <input
           placeholder="Дорожный расход"
           name="roadExpense"
@@ -58,20 +68,7 @@
           v-model="formattedValue"
         />
       </div>
-      <div class="flex flex-col gap-2">
-        <div>🔍 Поиск</div>
-        <productSearch @add-product="addProduct" :added-products="products" />
-        <button
-          class="flex self-end cursor-pointer bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
-          @click="
-            products = [];
-            roadExpense = '';
-            setFinalPrice();
-          "
-        >
-          🗑️ Очистить все
-        </button>
-      </div>
+      <div class="font-bold">Подробный отчет:</div>
     </div>
   </div>
 </template>
