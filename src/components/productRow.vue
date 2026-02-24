@@ -26,8 +26,15 @@
         v-model.number="product.margin"
       />
     </div>
-    <div class="font-medium text-gray-800">
-      {{ formatPrice(product.marginPrice) }} сум
+    <div class="flex gap-2 pr-1 font-medium text-gray-800">
+      <!-- {{ formatPrice(product.marginPrice) }} сум -->
+      <input
+        type="number"
+        v-model.number="product.marginPrice"
+        @input="setPrice"
+        class="block max-w-3/4 border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-900 outline-none"
+      />
+      <span class="block">сум</span>
     </div>
     <div class="font-medium text-gray-800">
       {{ formatPrice(product.deliveryPrice) }} сум
@@ -61,6 +68,15 @@ const setMargin = (event) => {
   const value = event.target.value;
   props.product.marginPrice =
     (props.product.minPrice / (1 - value / 100)) * 1.12;
+  emit("update:finalPrice");
+};
+
+const setPrice = () => {
+  props.product.margin = (
+    ((props.product.marginPrice / 1.12 - props.product.minPrice) /
+      (props.product.marginPrice / 1.12)) *
+    100
+  ).toFixed(2);
   emit("update:finalPrice");
 };
 
