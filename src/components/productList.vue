@@ -31,11 +31,8 @@
           @update:finalPrice="setFinalPrice"
           @update:removeProduct="removeProduct"
         />
-        <div class="grid grid-cols-10 font-bold">
-          <div
-            v-show="products.length > 0"
-            class="font-bold text-gray-800 col-start-8 text-right pr-5"
-          >
+        <div v-show="products.length > 0" class="grid grid-cols-10 font-bold">
+          <div class="font-bold text-gray-800 col-start-8 text-right pr-5">
             Итого:
           </div>
           <div class="font-bold text-gray-800">
