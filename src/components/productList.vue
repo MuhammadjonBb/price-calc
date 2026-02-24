@@ -16,12 +16,14 @@
           <div>Цена с учетем доставки</div>
           <div>Сумма</div>
         </div>
+
         <!-- <div
           v-if="!products.length"
           class="text-gray-900 text-center p-4 mt-2 border-dashed border-2 border-gray-600 font-bold rounded-lg"
         >
           Добавьте товары для расчета
         </div> -->
+
         <productRow
           v-for="(product, index) in products"
           :key="index"
