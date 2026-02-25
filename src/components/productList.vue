@@ -8,27 +8,28 @@
       </h2>
 
       <div class="grid gap-4 mb-4" v-if="isDesktop">
-        <div
-          class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] xl:font-semibold font-medium px-4 md:text-sm"
-        >
-          <div class="pr-1">Наименование</div>
-          <div class="pr-1">СС Факт</div>
-          <div class="pr-1">Ед. изм.</div>
-          <div class="pr-1" v-if="isDesktopLarge">Количество</div>
-          <div class="pr-1" v-else>Кол-во</div>
-          <div class="pr-1">Маржа (%)</div>
-          <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
-          <div class="pr-1 max-w-9/10">Цена с учетем доставки</div>
-          <div class="pr-1">Сумма</div>
-        </div>
+        <transition-group name="fade" tag="div" class="grid gap-3 relative">
+          <div
+            key="header"
+            class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] xl:font-semibold font-medium px-4 md:text-sm"
+          >
+            <div class="pr-1">Наименование</div>
+            <div class="pr-1">СС Факт</div>
+            <div class="pr-1">Ед. изм.</div>
+            <div class="pr-1" v-if="isDesktopLarge">Количество</div>
+            <div class="pr-1" v-else>Кол-во</div>
+            <div class="pr-1">Маржа (%)</div>
+            <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
+            <div class="pr-1 max-w-9/10">Цена с учетем доставки</div>
+            <div class="pr-1">Сумма</div>
+          </div>
 
-        <!-- <div
+          <!-- <div
           v-if="!products.length"
           class="text-gray-900 text-center p-4 mt-2 border-dashed border-2 border-gray-600  rounded-lg"
         >
           Добавьте товары для расчета
         </div> -->
-        <transition-group name="fade" tag="div" class="grid gap-3">
           <productRow
             v-for="(product, index) in products"
             :key="product.id || index"
@@ -36,12 +37,15 @@
             @update:finalPrice="setFinalPrice"
             @update:removeProduct="removeProduct"
           />
-        </transition-group>
 
-        <div class="flex flex-col gap-2 mt-2">
-          <h3 class="font-semibold text-lg">🔍 Поиск</h3>
-          <productSearch @add-product="addProduct" :added-products="products" />
-        </div>
+          <div key="search" class="flex flex-col gap-2 mt-2">
+            <h3 class="font-semibold text-lg">🔍 Поиск</h3>
+            <productSearch
+              @add-product="addProduct"
+              :added-products="products"
+            />
+          </div>
+        </transition-group>
       </div>
       <!-- MOBILE -->
       <div v-else class="text-sm md:text-md">
@@ -51,7 +55,7 @@
           Калькулятор оптимизирован для десктопной версии. Пожалуйста,
           используйте его на компьютере для лучшего опыта.
         </div> -->
-        <transition-group name="fade" tag="div" class="flex-col gap-1">
+        <transition-group name="fade" tag="div" class="grid gap-1 relative">
           <productRow
             v-for="(product, index) in products"
             :key="product.id || index"
