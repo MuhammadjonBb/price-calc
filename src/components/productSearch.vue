@@ -5,7 +5,7 @@
       v-model="search"
       type="text"
       placeholder="Поиск товара..."
-      class="w-full border rounded-lg px-3 py-2"
+      class="w-full px-4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
     />
 
     <!-- Подсказки -->

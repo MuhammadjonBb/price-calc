@@ -1,48 +1,56 @@
 <template>
-  <div class="grid grid-cols-10 items-center py-3 border-b">
-    <div class="font-medium text-gray-800 col-span-2 pr-2">
+  <div
+    class="grid grid-cols-[24%_10%_6%_8%_8%_14%_16%_10%_4%] items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
+  >
+    <div class="max-w-9/10">
       {{ product.name }}
     </div>
 
-    <div class="text-gray-600">{{ formatPrice(minPrice) }} сум</div>
-    <div class="text-gray-600">
+    <div>{{ formatPrice(minPrice) }} сум</div>
+    <div>
       {{ product.unit }}
     </div>
-    <div class="flex flex-row text-black">
+    <div class="flex flex-row">
       <input
         name="amount"
         type="number"
         v-model.number="product.amount"
         @input="setAmount"
-        class="block w-full max-w-30 border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-900 outline-none"
+        class="w-full px-4 max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+        :class="
+          isNegativeAmount
+            ? 'bg-red-100 border-red-400 focus:border-red-400 focus:ring-red-200'
+            : 'bg-primary-light border-border focus:border-primary focus:ring-primary/20'
+        "
       />
     </div>
-    <div class="flex flex-row text-black max-w-30">
+    <div class="flex flex-row">
       <input
         name="margin"
         type="number"
         @input="setMargin"
-        class="block w-full border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-900 outline-none"
+        :class="
+          isNegativeMargin
+            ? 'bg-red-100 border-red-400 focus:border-red-400 focus:ring-red-200'
+            : 'bg-primary-light border-border focus:border-primary focus:ring-primary/20'
+        "
+        class="w-full px-4 max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
         v-model.number="product.margin"
       />
     </div>
-    <div class="flex gap-2 pr-1 font-medium text-gray-800">
+    <div class="flex gap-2 pr-1">
       <!-- {{ formatPrice(product.marginPrice) }} сум -->
       <input
         type="number"
         v-model.number="product.marginPrice"
         @input="setPrice"
-        class="block max-w-3/4 border rounded-lg px-2 py-1 text-black focus:ring-2 focus:ring-blue-900 outline-none"
+        class="w-full max-w-3/4 px-4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
       />
       <span class="block">сум</span>
     </div>
-    <div class="font-medium text-gray-800">
-      {{ formatPrice(product.deliveryPrice) }} сум
-    </div>
-    <div class="font-medium text-gray-800">
-      {{ formatPrice(product.finalPrice) }} сум
-    </div>
-    <div class="font-medium flex justify-end pr-5">
+    <div class="">{{ formatPrice(product.deliveryPrice) }} сум</div>
+    <div class="">{{ formatPrice(product.finalPrice) }} сум</div>
+    <div class="flex justify-end pr-5">
       <button
         @click="removeProduct"
         class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -89,4 +97,12 @@ const setAmount = (event) => {
 const removeProduct = () => {
   emit("update:removeProduct", props.product);
 };
+
+const isNegativeMargin = computed(() => {
+  return props.product.margin < 0;
+});
+
+const isNegativeAmount = computed(() => {
+  return props.product.amount < 0;
+});
 </script>
