@@ -1,20 +1,21 @@
 <template>
-  <div class="p-6 text-text-main bg-surface min-h-screen">
+  <div class="xl:p-6 md:p-3 p-1 text-text-main bg-surface min-h-screen">
     <div
-      class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl p-6 mb-10"
+      class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10"
     >
-      <h2 class="text-2xl mb-6 font-bold">
-        Калькулятор маржи и дорожных расходов
+      <h2 class="md:text-2xl text-xl mb-6 font-bold">
+        Расчет маржи и дорожных расходов
       </h2>
 
-      <div class="grid gap-4 mb-4">
+      <div class="grid gap-4 mb-4" v-if="isDesktop">
         <div
-          class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] font-semibold px-4"
+          class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] xl:font-semibold font-medium px-4 md:text-sm"
         >
           <div class="pr-1">Наименование</div>
           <div class="pr-1">СС Факт</div>
           <div class="pr-1">Ед. изм.</div>
-          <div class="pr-1">Количество</div>
+          <div class="pr-1" v-if="isDesktopLarge">Количество</div>
+          <div class="pr-1" v-else>Кол-во</div>
           <div class="pr-1">Маржа (%)</div>
           <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
           <div class="pr-1 max-w-9/10">Цена с учетем доставки</div>
@@ -40,18 +41,40 @@
           <productSearch @add-product="addProduct" :added-products="products" />
         </div>
       </div>
+      <!-- MOBILE -->
+      <div v-else class="text-xs md:text-md">
+        <!-- <div
+          class="text-gray-900 text-center p-4 mt-2 border-d ashed border-2 border-gray-600 rounded-lg"
+        >
+          Калькулятор оптимизирован для десктопной версии. Пожалуйста,
+          используйте его на компьютере для лучшего опыта.
+        </div> -->
+        <productRow
+          v-for="(product, index) in products"
+          :key="index"
+          :product="product"
+          @update:finalPrice="setFinalPrice"
+          @update:removeProduct="removeProduct"
+        />
+        <div class="flex flex-col gap-2 mt-2 md:text-sm">
+          <h3 class="font-semibold">🔍 Поиск</h3>
+          <productSearch @add-product="addProduct" :added-products="products" />
+        </div>
+      </div>
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-6 max-w-full mx-auto">
+    <div
+      class="grid grid-cols-1 2xl:grid-cols-2 gap-4 mt-6 max-w-full mx-auto text-xs md:text-sm xl:text-xl"
+    >
       <div
         class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
       >
-        <h3 class="font-semibold">🚚 Дорожный расход:</h3>
-        <div class="flex flex-row justify-between gap-2">
+        <h3 class="font-semibold lg:text-lg">🚚 Дорожный расход:</h3>
+        <div class="flex flex-col 2xl:flex-row justify-between gap-2">
           <input
             placeholder="Дорожный расход"
             name="roadExpense"
             type="text"
-            class="w-full px-4 max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+            class="w-full px-4 xl:max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
             @input="setFinalPrice"
             v-model="formattedValue"
           />
@@ -70,7 +93,7 @@
       <div
         class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
       >
-        <h3 class="font-semibold">Подробный отчет:</h3>
+        <h3 class="font-semibold lg:text-lg">Итого:</h3>
         <div>
           Количество наименований:
           <strong>{{ products.length }}</strong>
@@ -211,5 +234,15 @@ const avgMargin = computed(() => {
   );
 
   return totalMargin / products.value.length;
+});
+
+const isDesktop = computed(() => {
+  console.log(window.innerWidth);
+
+  return window.innerWidth >= 1024; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
+});
+
+const isDesktopLarge = computed(() => {
+  return window.innerWidth >= 1440; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
 });
 </script>
