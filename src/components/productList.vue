@@ -28,47 +28,51 @@
         >
           Добавьте товары для расчета
         </div> -->
+        <transition-group name="fade" tag="div" class="grid gap-3">
+          <productRow
+            v-for="(product, index) in products"
+            :key="product.id || index"
+            :product="product"
+            @update:finalPrice="setFinalPrice"
+            @update:removeProduct="removeProduct"
+          />
+        </transition-group>
 
-        <productRow
-          v-for="(product, index) in products"
-          :key="index"
-          :product="product"
-          @update:finalPrice="setFinalPrice"
-          @update:removeProduct="removeProduct"
-        />
         <div class="flex flex-col gap-2 mt-2">
-          <h3 class="font-semibold">🔍 Поиск</h3>
+          <h3 class="font-semibold text-lg">🔍 Поиск</h3>
           <productSearch @add-product="addProduct" :added-products="products" />
         </div>
       </div>
       <!-- MOBILE -->
-      <div v-else class="text-xs md:text-md">
+      <div v-else class="text-sm md:text-md">
         <!-- <div
           class="text-gray-900 text-center p-4 mt-2 border-d ashed border-2 border-gray-600 rounded-lg"
         >
           Калькулятор оптимизирован для десктопной версии. Пожалуйста,
           используйте его на компьютере для лучшего опыта.
         </div> -->
-        <productRow
-          v-for="(product, index) in products"
-          :key="index"
-          :product="product"
-          @update:finalPrice="setFinalPrice"
-          @update:removeProduct="removeProduct"
-        />
+        <transition-group name="fade" tag="div" class="flex-col gap-1">
+          <productRow
+            v-for="(product, index) in products"
+            :key="product.id || index"
+            :product="product"
+            @update:finalPrice="setFinalPrice"
+            @update:removeProduct="removeProduct"
+          />
+        </transition-group>
         <div class="flex flex-col gap-2 mt-2 md:text-sm">
-          <h3 class="font-semibold">🔍 Поиск</h3>
+          <h3 class="font-semibold text-sm">🔍 Поиск</h3>
           <productSearch @add-product="addProduct" :added-products="products" />
         </div>
       </div>
     </div>
     <div
-      class="grid grid-cols-1 2xl:grid-cols-2 gap-4 mt-6 max-w-full mx-auto text-xs md:text-sm xl:text-xl"
+      class="grid grid-cols-1 2xl:grid-cols-2 gap-4 md:mt-6 mt-3 max-w-full mx-auto text-xs md:text-sm xl:text-xl"
     >
       <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
+        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border"
       >
-        <h3 class="font-semibold lg:text-lg">🚚 Дорожный расход:</h3>
+        <h3 class="font-semibold lg:text-lg text-sm">🚚 Дорожный расход:</h3>
         <div class="flex flex-col 2xl:flex-row justify-between gap-2">
           <input
             placeholder="Дорожный расход"
@@ -79,7 +83,7 @@
             v-model="formattedValue"
           />
           <button
-            class="flex self-end cursor-pointer bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+            class="flex self-end cursor-pointer bg-red-500 text-white md:px-4 py-2 px-3 rounded-lg hover:bg-red-600 transition-colors"
             @click="
               products = [];
               roadExpense = '';
@@ -91,7 +95,7 @@
         </div>
       </div>
       <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
+        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border"
       >
         <h3 class="font-semibold lg:text-lg">Итого:</h3>
         <div>
@@ -237,8 +241,6 @@ const avgMargin = computed(() => {
 });
 
 const isDesktop = computed(() => {
-  console.log(window.innerWidth);
-
   return window.innerWidth >= 1024; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
 });
 

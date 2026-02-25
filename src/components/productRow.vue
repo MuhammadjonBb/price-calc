@@ -65,21 +65,21 @@
   <!-- MOBILE -->
   <div
     v-else
-    class="flex flex-col gap-2 text-text-main rounded-lg border border-border shadow-md bg-surface mb-4 text-xs md:text-sm p-3 md:p-5"
+    class="flex flex-col text-text-main rounded-lg border border-border shadow-md bg-surface mb-4 text-sm md:text-sm p-3 md:p-5"
   >
     <h2 class="text-sm md:text-lg font-semibold">Наименование</h2>
-    <div class="">
+    <div class="mb-2">
       {{ product.name }}
     </div>
 
-    <div>
+    <div class="mb-2">
       <span class="font-semibold mr-1">CC Факт:</span>
       {{ formatPrice(minPrice) }} сум
     </div>
-    <div>
+    <div class="mb-2">
       <span class="font-semibold mr-1">Ед. изм.: </span> {{ product.unit }}
     </div>
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col gap-0.5 mb-2">
       <span class="font-semibold">Количество:</span>
       <input
         name="amount"
@@ -94,7 +94,7 @@
         "
       />
     </div>
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col gap-0.5 mb-2">
       <span class="font-semibold"> Маржа: (%) </span>
       <input
         name="margin"
@@ -109,7 +109,7 @@
         v-model.number="product.margin"
       />
     </div>
-    <div class="flex flex-col gap-1 pr-1">
+    <div class="flex flex-col gap-0.5 pr-1 mb-2">
       <span class="font-semibold">Цена без доставки (Маржа + НДС)</span>
       <!-- {{ formatPrice(product.marginPrice) }} сум -->
       <div class="flex gap-2">
@@ -123,15 +123,15 @@
         <span class="block content-center">сум</span>
       </div>
     </div>
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col gap-0.5 mb-2">
       <span class="font-semibold"> Цена с учетем доставки:<br /></span>
       {{ formatPrice(product.deliveryPrice) }} сум
     </div>
-    <div class="">
+    <div class="mb-2">
       <span class="font-semibold">Сумма:<br /></span>
       {{ formatPrice(product.finalPrice) }} сум
     </div>
-    <div class="flex justify-end pr-5">
+    <div class="flex justify-end">
       <button
         @click="removeProduct"
         class="bg-red-500 text-white px-4 py-1.5 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
