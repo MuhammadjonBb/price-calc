@@ -9,7 +9,7 @@
 
       <div class="grid gap-4 mb-4">
         <div
-          class="grid grid-cols-[24%_10%_6%_8%_8%_14%_16%_10%_4%] font-semibold px-4"
+          class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] font-semibold px-4"
         >
           <div class="pr-1">Наименование</div>
           <div class="pr-1">СС Факт</div>
@@ -17,7 +17,7 @@
           <div class="pr-1">Количество</div>
           <div class="pr-1">Маржа (%)</div>
           <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
-          <div class="pr-1">Цена с учетем доставки</div>
+          <div class="pr-1 max-w-9/10">Цена с учетем доставки</div>
           <div class="pr-1">Сумма</div>
         </div>
 
@@ -38,6 +38,23 @@
         <div class="flex flex-col gap-2 mt-2">
           <h3 class="font-semibold">🔍 Поиск</h3>
           <productSearch @add-product="addProduct" :added-products="products" />
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-6 max-w-full mx-auto">
+      <div
+        class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
+      >
+        <h3 class="font-semibold">🚚 Дорожный расход:</h3>
+        <div class="flex flex-row justify-between gap-2">
+          <input
+            placeholder="Дорожный расход"
+            name="roadExpense"
+            type="text"
+            class="w-full px-4 max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+            @input="setFinalPrice"
+            v-model="formattedValue"
+          />
           <button
             class="flex self-end cursor-pointer bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
             @click="
@@ -50,25 +67,31 @@
           </button>
         </div>
       </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4 mt-6 max-w-full mx-auto">
-      <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
-      >
-        <h3 class="font-semibold">🚚 Дорожный расход:</h3>
-        <input
-          placeholder="Дорожный расход"
-          name="roadExpense"
-          type="text"
-          class="w-full px-4 max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
-          @input="setFinalPrice"
-          v-model="formattedValue"
-        />
-      </div>
       <div
         class="flex flex-col gap-2 shadow-xl rounded-2xl p-6 border border-border"
       >
         <h3 class="font-semibold">Подробный отчет:</h3>
+        <div>
+          Количество наименований:
+          <strong>{{ products.length }}</strong>
+        </div>
+        <div>
+          Общая стоимость
+          <span v-show="parseFloat(roadExpense) > 0">с доставкой</span>:
+          <strong>{{ formatPrice(totalCost) }} сум</strong>
+        </div>
+        <div v-if="parseFloat(roadExpense) > 0">
+          Общая стоимость без доставки:
+          <strong>{{ formatPrice(totalCost - roadExpense) }} сум</strong>
+        </div>
+        <div>
+          Средняя маржа:
+          <strong>{{ formatPrice(avgMargin) }}%</strong>
+        </div>
+        <div>
+          Дорожный расход:
+          <strong>{{ formatPrice(roadExpense) }} сум</strong>
+        </div>
       </div>
     </div>
   </div>
@@ -172,5 +195,21 @@ const formattedValue = computed({
     // Убираем пробелы и всё кроме цифр
     roadExpense.value = val.replace(/\s/g, "").replace(/[^\d]/g, "");
   },
+});
+
+// Вычисляем общую стоимость товаров
+const totalCost = computed(() => {
+  return products.value.reduce((sum, product) => sum + product.finalPrice, 0);
+});
+
+// Вычисляем среднюю маржу
+const avgMargin = computed(() => {
+  if (products.value.length === 0) return 0;
+  const totalMargin = products.value.reduce(
+    (sum, product) => sum + parseFloat(product.margin || 0),
+    0,
+  );
+
+  return totalMargin / products.value.length;
 });
 </script>

@@ -11,16 +11,22 @@
     <!-- Подсказки -->
     <div
       v-if="filteredProducts.length"
-      class="absolute w-full bg-white border rounded shadow mt-1 max-h-60 overflow-y-auto"
+      class="absolute w-full bg-white border rounded shadow mt-1 max-h-70 overflow-y-auto"
     >
       <div
         v-for="product in filteredProducts"
         :key="product.id"
         @click="addProduct(product)"
-        class="px-3 py-2 hover:bg-gray-100 cursor-pointer rounded-lg"
+        class="px-3 py-2 hover:bg-gray-100 cursor-pointer border-b border-border last:border-0"
       >
         {{ product.name }}
       </div>
+      <button
+        @click="search = ''"
+        class="sticky bottom-0 w-full text-center py-2 text-white bg-red-500 hover:bg-red-600 transition-colors rounded-b cursor-pointer"
+      >
+        Закрыть
+      </button>
     </div>
   </div>
 </template>

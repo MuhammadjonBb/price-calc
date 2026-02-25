@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-[24%_10%_6%_8%_8%_14%_16%_10%_4%] items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
+    class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
   >
     <div class="max-w-9/10">
       {{ product.name }}
@@ -41,19 +41,20 @@
     <div class="flex gap-2 pr-1">
       <!-- {{ formatPrice(product.marginPrice) }} сум -->
       <input
+        name="marginPrice"
         type="number"
         v-model.number="product.marginPrice"
         @input="setPrice"
         class="w-full max-w-3/4 px-4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
       />
-      <span class="block">сум</span>
+      <span class="block content-center">сум</span>
     </div>
     <div class="">{{ formatPrice(product.deliveryPrice) }} сум</div>
     <div class="">{{ formatPrice(product.finalPrice) }} сум</div>
     <div class="flex justify-end pr-5">
       <button
         @click="removeProduct"
-        class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+        class="bg-red-500 text-white px-4 py-1.5 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
       >
         Удалить
       </button>
@@ -99,7 +100,7 @@ const removeProduct = () => {
 };
 
 const isNegativeMargin = computed(() => {
-  return props.product.margin < 0;
+  return props.product.margin < 0 || props.product.margin > 100;
 });
 
 const isNegativeAmount = computed(() => {
