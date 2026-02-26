@@ -3,9 +3,17 @@
     <div
       class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10"
     >
-      <h2 class="md:text-2xl text-xl mb-6 font-bold">
-        Расчет маржи и дорожных расходов
-      </h2>
+      <div class="flex justify-between items-center">
+        <h2 class="md:text-2xl text-xl mb-6 font-bold">
+          Расчет маржи и дорожных расходов
+        </h2>
+        <button
+          @click="logout"
+          class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+        >
+          Выйти
+        </button>
+      </div>
 
       <div class="grid gap-4 mb-4" v-if="isDesktop">
         <transition-group name="fade" tag="div" class="grid gap-3 relative">
@@ -251,4 +259,9 @@ const isDesktop = computed(() => {
 const isDesktopLarge = computed(() => {
   return window.innerWidth >= 1440; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
 });
+
+const logout = () => {
+  localStorage.removeItem("auth");
+  location.reload();
+};
 </script>

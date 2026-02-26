@@ -1,11 +1,22 @@
 <script setup>
-import productList from './components/productList.vue'
+import { ref, onMounted } from "vue";
+import productList from "./components/productList.vue";
+import Login from "./components/Login.vue";
+
+const isAuth = ref(false);
+
+onMounted(() => {
+  isAuth.value = localStorage.getItem("auth") === "true";
+});
+
+const handleLoginSuccess = () => {
+  isAuth.value = true;
+};
 </script>
 
 <template>
-    <productList/>
+  <Login v-if="!isAuth" @success="handleLoginSuccess" />
+  <productList v-else />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
