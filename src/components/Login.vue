@@ -78,13 +78,16 @@ async function hash(text) {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+const sessionDuration = 30 * 60 * 1000; // 30 минут
+const expiresAt = Date.now() + sessionDuration;
+
 const handleLogin = async (e) => {
   e.preventDefault();
   const hashedInput = await hash(password.value);
-  console.log(hashedInput);
 
   if (hashedInput === SAVED_HASH) {
     localStorage.setItem("auth", "true");
+    localStorage.setItem("expiresAt", expiresAt.toString());
     emit("success");
   } else {
     error.value = "Неверный пароль";
