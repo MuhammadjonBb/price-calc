@@ -3,14 +3,17 @@
     <div
       class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10"
     >
-      <div class="flex justify-between items-center">
-        <h2 class="md:text-2xl text-xl mb-6 font-bold">
+      <div
+        class="flex justify-between flex-col sm:flex-row md:flex-row gap-4 mb-6"
+      >
+        <h2 class="md:text-2xl text-xl font-bold">
           Расчет маржи и дорожных расходов
         </h2>
         <button
           @click="logout"
-          class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+          class="bg-red-500 flex self-end items-center text-white px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
         >
+          <img src="../assets/img/exit.svg" alt="Выйти" class="w-5 mr-1" />
           Выйти
         </button>
       </div>
@@ -47,7 +50,14 @@
           />
 
           <div key="search" class="flex flex-col gap-2 mt-2">
-            <h3 class="font-semibold text-lg">🔍 Поиск</h3>
+            <h3 class="font-semibold text-lg">
+              <img
+                src="../assets/img/search.svg"
+                alt="Поиск"
+                class="inline w-8 mr-0.5"
+              />
+              Поиск
+            </h3>
             <productSearch
               @add-product="addProduct"
               :added-products="products"
@@ -73,7 +83,14 @@
           />
         </transition-group>
         <div class="flex flex-col gap-2 mt-2 md:text-sm">
-          <h3 class="font-semibold text-sm">🔍 Поиск</h3>
+          <h3 class="font-semibold text-sm">
+            <img
+              src="../assets/img/search.svg"
+              alt="Поиск"
+              class="inline w-8 mr-0.5"
+            />
+            Поиск
+          </h3>
           <productSearch @add-product="addProduct" :added-products="products" />
         </div>
       </div>
@@ -84,7 +101,14 @@
       <div
         class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border"
       >
-        <h3 class="font-semibold lg:text-lg text-sm">🚚 Дорожный расход:</h3>
+        <h3 class="font-semibold lg:text-lg text-sm">
+          <img
+            src="../assets/img/truck.svg"
+            alt="Доставка"
+            class="inline w-8 mr-0.5"
+          />
+          Дорожный расход:
+        </h3>
         <div class="flex flex-col 2xl:flex-row justify-between gap-2">
           <input
             placeholder="Дорожный расход"
@@ -95,14 +119,19 @@
             v-model="formattedValue"
           />
           <button
-            class="flex self-end cursor-pointer bg-red-500 text-white md:px-4 py-2 px-3 rounded-lg hover:bg-red-600 transition-colors"
+            class="flex self-end items-center cursor-pointer bg-red-500 text-white md:px-4 py-2 px-3 rounded-lg hover:bg-red-600 transition-colors"
             @click="
               products = [];
               roadExpense = '';
               setFinalPrice();
             "
           >
-            🗑️ Очистить все
+            <img
+              src="../assets/img/clear.svg"
+              alt="Очистить"
+              class="w-5 md:w-7 inline mr-0.5"
+            />
+            Очистить все
           </button>
         </div>
       </div>

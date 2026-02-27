@@ -55,10 +55,12 @@
     <div class="flex justify-end">
       <button
         @click="removeProduct"
-        class="bg-red-500 text-white px-4 py-1.5 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+        class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
       >
         <span v-if="isDesktopLarge">Удалить</span>
-        <span v-else>🗑️</span>
+        <span v-else
+          ><img src="../assets/img/delete.svg" alt="Удалить" class="w-5"
+        /></span>
       </button>
     </div>
   </div>
