@@ -75,7 +75,7 @@
     </div>
 
     <div class="mb-2">
-      <span class="font-semibold mr-1">CC Факт:</span>
+      <span class="font-semibold mr-1">CC без НДС:</span>
       {{ formatPrice(minPrice) }} сум
     </div>
     <div class="mb-2">

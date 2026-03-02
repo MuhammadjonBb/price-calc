@@ -25,7 +25,7 @@
             class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] xl:font-semibold font-medium px-4 md:text-sm"
           >
             <div class="pr-1">Наименование</div>
-            <div class="pr-1">СС Факт</div>
+            <div class="pr-1">СС Без НДС</div>
             <div class="pr-1">Ед. изм.</div>
             <div class="pr-1" v-if="isDesktopLarge">Количество</div>
             <div class="pr-1" v-else>Кол-во</div>
@@ -157,6 +157,10 @@
           <strong>{{ formatPrice(avgMargin) }}%</strong>
         </div>
         <div>
+          Общая прибыль:
+          <strong>{{ formatPrice(totalProfit) }} сум</strong>
+        </div>
+        <div>
           Дорожный расход:
           <strong>{{ formatPrice(roadExpense) }} сум</strong>
         </div>
@@ -279,6 +283,14 @@ const avgMargin = computed(() => {
   );
 
   return totalMargin / products.value.length;
+});
+// Вычисляем общую прибыль
+const totalProfit = computed(() => {
+  return products.value.reduce((sum, product) => {
+    const profitPerUnit =
+      (product.marginPrice / 1.12 - product.minPrice) * product.amount; // Прибыль с учетом количества
+    return sum + profitPerUnit;
+  }, 0);
 });
 
 const isDesktop = computed(() => {

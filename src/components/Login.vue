@@ -68,22 +68,24 @@ const error = ref("");
 const emit = defineEmits(["success"]);
 const showPassword = ref(false);
 
-const SAVED_HASH = import.meta.env.VITE_APP_PASSWORD_HASH;
+const SAVED_HASH = import.meta.env.VITE_APP_PASSWORD_HASH; // Храните хэш пароля в переменных окружения для безопасности
 
+// Функция для хэширования пароля с помощью SHA-256
 async function hash(text) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  const encoder = new TextEncoder(); // Кодируем строку в Uint8Array
+  const data = encoder.encode(text); // Хэшируем данные
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data); // Получаем ArrayBuffer с результатом хэша
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // Преобразуем ArrayBuffer в массив байтов
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join(""); // Преобразуем байты в строку в шестнадцатеричном формате
 }
 
 const sessionDuration = 30 * 60 * 1000; // 30 минут
 const expiresAt = Date.now() + sessionDuration;
 
+// Функция для обработки входа
 const handleLogin = async (e) => {
   e.preventDefault();
-  const hashedInput = await hash(password.value);
+  const hashedInput = await hash(password.value); // Хэшируем введенный пароль
 
   if (hashedInput === SAVED_HASH) {
     localStorage.setItem("auth", "true");
