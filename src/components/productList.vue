@@ -31,7 +31,7 @@
             <div class="pr-1" v-else>Кол-во</div>
             <div class="pr-1">Маржа (%)</div>
             <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
-            <div class="pr-1 max-w-9/10">Цена с учетем доставки</div>
+            <div class="pr-1 max-w-9/10">Цена с учетом доставки</div>
             <div class="pr-1">Сумма</div>
           </div>
 
